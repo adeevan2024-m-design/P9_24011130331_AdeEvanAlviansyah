@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 
 import '../pages/app_shell.dart';
+import '../pages/admin_dashboard_page.dart';
 import '../pages/cart_page.dart';
 import '../pages/checkout_page.dart';
 import '../pages/home_page.dart';
@@ -41,6 +42,9 @@ GoRouter createRouter(AuthState authState, CartState cartState) {
       if (loggedIn && goingPublic) {
         return state.uri.queryParameters['from'] ?? '/home';
       }
+      if (state.matchedLocation.startsWith('/admin') && !authState.isAdmin) {
+        return '/home';
+      }
       return null;
     },
     errorBuilder: (context, state) =>
@@ -54,6 +58,11 @@ GoRouter createRouter(AuthState authState, CartState cartState) {
       GoRoute(
         path: '/login',
         builder: (context, state) => LoginPage(authState: authState),
+      ),
+      GoRoute(
+        path: '/admin/dashboard',
+        builder: (context, state) =>
+            AdminDashboardPage(authState: authState),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) => AppShell(

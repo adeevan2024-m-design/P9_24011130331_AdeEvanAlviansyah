@@ -84,3 +84,26 @@ test/           Pengujian aplikasi
 Data produk bersifat contoh. Login dan keranjang disimpan di memori selama
 aplikasi berjalan. Checkout hanya simulasi dan belum terhubung ke backend
 atau layanan pembayaran.
+
+## Pembaruan: Dashboard Admin dan Deep Link
+
+- Username `admin` dapat membuka dashboard di rute `/admin/dashboard`.
+- Pengguna lain yang sudah login akan diarahkan ke Beranda jika membuka rute
+  admin. Pengguna yang belum login akan diminta login terlebih dahulu.
+- Dashboard admin menampilkan ringkasan, aksi cepat, dan aktivitas terbaru.
+- Android mendukung deep link dengan skema `tokoapp://toko`, misalnya:
+  `tokoapp://toko/search/product/3`.
+
+Untuk menguji akses dashboard di Chrome, login sebagai `budi` lalu buka
+`/#/admin/dashboard`; aplikasi akan mengarahkan ke Beranda. Setelah logout,
+login sebagai `admin` dan buka rute yang sama untuk melihat dashboard.
+
+Deep link Android dapat diuji dengan perangkat terhubung dan aplikasi sudah
+dijalankan ulang setelah perubahan manifest:
+
+```bash
+adb shell am start -a android.intent.action.VIEW -d "tokoapp://toko/search/product/3"
+```
+
+Jika pengguna belum login, aplikasi akan menampilkan halaman login dan
+melanjutkan ke detail produk setelah login.
