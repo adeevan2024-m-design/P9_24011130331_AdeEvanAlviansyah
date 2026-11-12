@@ -1,28 +1,26 @@
+# Identitas
+
+- **Nama:** Ade Evan Alviansyah
+- **NIM:** 24011130331
+- **GitHub:** [adeevan2024-m-design](https://github.com/adeevan2024-m-design)
+- **Repository:** [P9_24011130331_AdeEvanAlviansyah](https://github.com/adeevan2024-m-design/P9_24011130331_AdeEvanAlviansyah)
+
 # Toko App
 
-Aplikasi demo toko online sederhana yang dibuat dengan Flutter. Aplikasi ini
-memiliki tampilan untuk web dan Android, dengan alur login, pencarian produk,
-keranjang, dan checkout demo.
-
-## Identitas
-
-- Nama: **maulvinazirrahmat**
-- NIM: **240111465**
-
-## Tautan
-
-- Profil GitHub: [maulvinazir87-cmd](https://github.com/maulvinazir87-cmd)
-- Repository: [Toko App di GitHub](https://github.com/maulvinazir87-cmd/-P9_24011130465_MaulviNazirRahmat.pdf)
+Toko App adalah aplikasi demo toko online yang dibuat menggunakan Flutter.
+Aplikasi ini menyediakan katalog produk dan alur belanja sederhana, serta
+dapat dijalankan di Android dan web.
 
 ## Fitur
 
-- Login dan logout menggunakan nama pengguna.
-- Halaman yang memerlukan login dilindungi dan diarahkan ke halaman login.
-- Menampilkan daftar produk, detail produk, dan pencarian berdasarkan nama atau deskripsi.
-- Menambahkan dan menghapus produk dari keranjang, termasuk jumlah dan total harga.
+- Login dan logout demo menggunakan nama pengguna.
+- Katalog produk dengan gambar yang dimuat dari Unsplash.
+- Pencarian produk berdasarkan nama atau deskripsi.
+- Halaman detail produk.
+- Keranjang belanja dengan pengaturan jumlah dan total harga.
 - Alur checkout demo dengan ringkasan pesanan.
-- Navigasi bawah untuk Beranda, Cari, Keranjang, dan Profil.
-- Halaman tidak ditemukan untuk rute yang tidak tersedia.
+- Navigasi Beranda, Cari, Keranjang, dan Profil.
+- Pengalihan ke halaman login untuk rute yang memerlukan autentikasi.
 
 ## Teknologi
 
@@ -30,23 +28,35 @@ keranjang, dan checkout demo.
 - Material 3
 - `go_router` untuk navigasi dan perlindungan rute
 
-## Menjalankan aplikasi web
+## Persiapan
 
-Pastikan Flutter SDK dan Google Chrome sudah tersedia, lalu jalankan dari root
-proyek:
+Pastikan Flutter SDK telah terpasang, lalu jalankan dari direktori proyek:
 
 ```bash
 flutter pub get
+```
+
+### Menjalankan di web
+
+Pastikan Google Chrome tersedia, lalu jalankan:
+
+```bash
 flutter run -d chrome --web-port 8080
 ```
 
-Setelah aplikasi berjalan, buka [http://localhost:8080](http://localhost:8080).
+Buka [http://localhost:8080](http://localhost:8080) jika browser tidak terbuka
+secara otomatis.
 
-Untuk menjalankan di Android, hubungkan perangkat atau mulai emulator, lalu:
+### Menjalankan di Android
+
+Hubungkan perangkat Android atau mulai emulator. Periksa ID perangkat dengan
+`flutter devices`, kemudian jalankan:
 
 ```bash
-flutter run -d android
+flutter run -d <device-id>
 ```
+
+Perangkat perlu terhubung ke internet untuk memuat gambar produk dari Unsplash.
 
 ## Pengujian dan analisis
 
@@ -63,6 +73,7 @@ lib/
   pages/        Halaman aplikasi
   router/       Konfigurasi rute
   state/        State login dan keranjang
+  theme/        Tema dan warna aplikasi
   widgets/      Widget yang digunakan bersama
 web/            Berkas platform web
 test/           Pengujian aplikasi

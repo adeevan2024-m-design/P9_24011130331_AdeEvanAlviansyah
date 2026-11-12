@@ -26,7 +26,7 @@ void main() {
         ..add(dummyProducts[1])
         ..clear();
 
-      expect(cart.isEmpty, isTrue);
+      expect(cart.items, isEmpty);
       expect(cart.count, 0);
       expect(cart.total, 0);
     });

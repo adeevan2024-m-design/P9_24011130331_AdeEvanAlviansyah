@@ -1,48 +1,87 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../router/app_routes.dart';
 import '../state/auth_state.dart';
+import '../theme/app_colors.dart';
 
 class ProfilePage extends StatelessWidget {
-  final AuthState authState;
-
   const ProfilePage({super.key, required this.authState});
+
+  final AuthState authState;
 
   @override
   Widget build(BuildContext context) {
+    final username = authState.username;
+    final initial = username.isNotEmpty ? username[0].toUpperCase() : 'P';
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Profil')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          const CircleAvatar(
-            radius: 40,
-            child: Icon(Icons.person, size: 40),
-          ),
-          const SizedBox(height: 16),
-          Center(
-            child: Text(
-              authState.username,
-              style: Theme.of(context).textTheme.titleLarge,
+      appBar: AppBar(
+        title: const Text(
+          'Profil',
+          style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.ink),
+        ),
+        backgroundColor: AppColors.surface,
+        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 0,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 96,
+              height: 96,
+              decoration: const BoxDecoration(
+                gradient: AppColors.brand,
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                initial,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 40,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
             ),
-          ),
-          const SizedBox(height: 24),
-          ListTile(
-            leading: const Icon(Icons.account_circle_outlined),
-            title: const Text('Nama pengguna'),
-            subtitle: Text(authState.username),
-          ),
-          const SizedBox(height: 16),
-          OutlinedButton.icon(
-            onPressed: () {
-              authState.logout();
-              context.go(AppRoutes.login);
-            },
-            icon: const Icon(Icons.logout),
-            label: const Text('Logout'),
-          ),
-        ],
+            const SizedBox(height: 16),
+            Text(
+              username,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+                color: AppColors.ink,
+              ),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              'Pelanggan Toko App',
+              style: TextStyle(color: AppColors.muted),
+            ),
+            const SizedBox(height: 28),
+            OutlinedButton.icon(
+              onPressed: () {
+                authState.logout(); 
+                context.go('/login'); 
+              },
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.primary,
+                side: const BorderSide(color: AppColors.primary),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+              icon: const Icon(Icons.logout_rounded),
+              label: const Text(
+                'Logout',
+                style: TextStyle(fontWeight: FontWeight.w700),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
