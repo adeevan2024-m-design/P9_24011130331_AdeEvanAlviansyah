@@ -6,6 +6,7 @@ class AuthState extends ChangeNotifier {
   String? _username;
 
   bool get isLoggedIn => _username != null;
+  bool get isAdmin => _username == 'admin';
   String get username => _username ?? '';
 
   void login(String username) {

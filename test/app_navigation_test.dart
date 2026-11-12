@@ -5,6 +5,45 @@ import 'package:toko_app/state/auth_state.dart';
 import 'package:toko_app/state/cart_state.dart';
 
 void main() {
+  testWidgets('non-admin users are redirected from the admin dashboard', (
+    tester,
+  ) async {
+    final authState = AuthState()..login('budi');
+    final cartState = CartState();
+    final router = createRouter(authState, cartState);
+    addTearDown(() {
+      router.dispose();
+      authState.dispose();
+      cartState.dispose();
+    });
+
+    await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+    router.go('/admin/dashboard');
+    await tester.pumpAndSettle();
+
+    expect(router.routeInformationProvider.value.uri.path, '/home');
+    expect(find.text('Halo, budi!'), findsOneWidget);
+  });
+
+  testWidgets('admin users can open the admin dashboard', (tester) async {
+    final authState = AuthState()..login('admin');
+    final cartState = CartState();
+    final router = createRouter(authState, cartState);
+    addTearDown(() {
+      router.dispose();
+      authState.dispose();
+      cartState.dispose();
+    });
+
+    await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+    router.go('/admin/dashboard');
+    await tester.pumpAndSettle();
+
+    expect(router.routeInformationProvider.value.uri.path, '/admin/dashboard');
+    expect(find.text('Admin Dashboard'), findsOneWidget);
+    expect(find.text('Selamat datang, admin'), findsOneWidget);
+  });
+
   testWidgets('splash redirects to login and login opens the home page', (
     tester,
   ) async {
