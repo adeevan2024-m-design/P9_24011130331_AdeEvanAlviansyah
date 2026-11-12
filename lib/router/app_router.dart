@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../pages/app_shell.dart';
@@ -8,53 +7,53 @@ import '../pages/home_page.dart';
 import '../pages/login_page.dart';
 import '../pages/not_found_page.dart';
 import '../pages/product_detail_page.dart';
+import '../pages/splash_screen.dart';
 import '../pages/profile_page.dart';
 import '../pages/search_page.dart';
 import '../state/auth_state.dart';
 import '../state/cart_state.dart';
-import 'app_routes.dart';
 
-GoRouter createAppRouter({
-  required AuthState authState,
-  required CartState cartState,
-}) {
-  final homeNavigatorKey = GlobalKey<NavigatorState>();
-  final searchNavigatorKey = GlobalKey<NavigatorState>();
-  final cartNavigatorKey = GlobalKey<NavigatorState>();
-  final profileNavigatorKey = GlobalKey<NavigatorState>();
-  const publicRoutes = {AppRoutes.login};
+GoRouter createRouter(AuthState authState, CartState cartState) {
+ 
+  const publicRoutes = ['/splash', '/login'];
+
+  
+  GoRoute productDetailRoute() => GoRoute(
+        path: 'product/:id', 
+        builder: (context, state) {
+          final id = int.tryParse(state.pathParameters['id'] ?? '');
+          return ProductDetailPage(productId: id, cartState: cartState);
+        },
+      );
 
   return GoRouter(
-    initialLocation: AppRoutes.home,
+    initialLocation: '/splash',
+    debugLogDiagnostics: true,
     refreshListenable: authState,
     redirect: (context, state) {
-      final path = state.uri.path;
-      if (!authState.isLoggedIn && !publicRoutes.contains(path)) {
-        return Uri(
-          path: AppRoutes.login,
-          queryParameters: {'from': state.uri.toString()},
-        ).toString();
-      }
+      final loggedIn = authState.isLoggedIn;
+      final goingPublic = publicRoutes.contains(state.matchedLocation);
 
-      if (authState.isLoggedIn && publicRoutes.contains(path)) {
-        final destination = state.uri.queryParameters['from'];
-        if (destination != null &&
-            destination.startsWith('/') &&
-            !destination.startsWith('//')) {
-          return destination;
-        }
-        return AppRoutes.home;
+      if (!loggedIn && !goingPublic) {
+        final from = Uri.encodeComponent(state.uri.toString());
+        return '/login?from=$from';
       }
-
+      if (loggedIn && goingPublic) {
+        return state.uri.queryParameters['from'] ?? '/home';
+      }
       return null;
     },
+    errorBuilder: (context, state) =>
+        NotFoundPage(location: state.uri.toString()),
     routes: [
+      
       GoRoute(
-        path: AppRoutes.login,
-        builder: (context, state) => LoginPage(
-          authState: authState,
-          fromLocation: state.uri.queryParameters['from'] ?? AppRoutes.home,
-        ),
+        path: '/splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => LoginPage(authState: authState),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) => AppShell(
@@ -62,78 +61,49 @@ GoRouter createAppRouter({
           cartState: cartState,
         ),
         branches: [
-          StatefulShellBranch(
-            navigatorKey: homeNavigatorKey,
-            routes: [
-              GoRoute(
-                path: AppRoutes.home,
-                builder: (context, state) => HomePage(authState: authState),
-                routes: [
-                  GoRoute(
-                    path: 'product/:id',
-                    builder: (context, state) => _productDetailRoute(
-                      state,
-                      cartState,
-                    ),
-                  ),
-                ],
+         
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: '/home',
+              builder: (context, state) => HomePage(
+                authState: authState,
+               
+                onSearchTap: () => context.go('/search'),
               ),
-            ],
-          ),
-          StatefulShellBranch(
-            navigatorKey: searchNavigatorKey,
-            routes: [
-              GoRoute(
-                path: AppRoutes.search,
-                builder: (context, state) => const SearchPage(),
-                routes: [
-                  GoRoute(
-                    path: 'product/:id',
-                    builder: (context, state) => _productDetailRoute(
-                      state,
-                      cartState,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            navigatorKey: cartNavigatorKey,
-            routes: [
-              GoRoute(
-                path: AppRoutes.cart,
-                builder: (context, state) => CartPage(cartState: cartState),
-                routes: [
-                  GoRoute(
-                    path: 'checkout',
-                    builder: (context, state) =>
-                        CheckoutPage(cartState: cartState),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            navigatorKey: profileNavigatorKey,
-            routes: [
-              GoRoute(
-                path: AppRoutes.profile,
-                builder: (context, state) => ProfilePage(authState: authState),
-              ),
-            ],
-          ),
+              routes: [productDetailRoute()],
+            ),
+          ]),
+          
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: '/search',
+              builder: (context, state) => const SearchPage(),
+              routes: [productDetailRoute()],
+            ),
+          ]),
+         
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: '/cart',
+              builder: (context, state) => CartPage(cartState: cartState),
+              routes: [
+                GoRoute(
+                  path: 'checkout', 
+                  builder: (context, state) =>
+                      CheckoutPage(cartState: cartState),
+                ),
+              ],
+            ),
+          ]),
+          
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: '/profile',
+              builder: (context, state) => ProfilePage(authState: authState),
+            ),
+          ]),
         ],
       ),
     ],
-    errorBuilder: (context, state) =>
-        NotFoundPage(location: state.uri.toString()),
-  );
-}
-
-Widget _productDetailRoute(GoRouterState state, CartState cartState) {
-  return ProductDetailPage(
-    productId: state.pathParameters['id'] ?? '',
-    cartState: cartState,
   );
 }

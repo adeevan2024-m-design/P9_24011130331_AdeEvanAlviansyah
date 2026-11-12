@@ -1,39 +1,77 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../router/app_routes.dart';
+import '../theme/app_colors.dart';
+
 
 class NotFoundPage extends StatelessWidget {
-  final String location;
-
   const NotFoundPage({super.key, required this.location});
+
+  final String location;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('404 - Halaman Tidak Ditemukan')),
+      appBar: AppBar(
+        title: const Text(
+          'Halaman Tidak Ditemukan',
+          style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.ink),
+        ),
+        backgroundColor: AppColors.surface,
+        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 0,
+      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.error_outline, size: 72),
-              const SizedBox(height: 16),
+              Container(
+                width: 96,
+                height: 96,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withAlpha(26),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.error_outline_rounded,
+                  size: 52,
+                  color: AppColors.primary,
+                ),
+              ),
+              const SizedBox(height: 20),
               const Text(
-                'Halaman yang Anda cari tidak ditemukan.',
-                textAlign: TextAlign.center,
+                '404',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.ink,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
-                location,
+                'Rute "$location" tidak tersedia.',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall,
+                style: const TextStyle(color: AppColors.muted),
               ),
               const SizedBox(height: 24),
               FilledButton(
-                onPressed: () => context.go(AppRoutes.home),
-                child: const Text('Kembali ke Beranda'),
+                onPressed: () => context.go('/home'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 14,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: const Text(
+                  'Kembali ke Beranda',
+                  style: TextStyle(fontWeight: FontWeight.w700),
+                ),
               ),
             ],
           ),

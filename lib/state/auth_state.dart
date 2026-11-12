@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+/// [ChangeNotifier], setiap perubahan
+/// bisa "didengar" oleh GoRouter lewat `refreshListenable`.
 class AuthState extends ChangeNotifier {
   String? _username;
 
@@ -9,7 +11,7 @@ class AuthState extends ChangeNotifier {
   void login(String username) {
     final normalizedUsername = username.trim();
     if (normalizedUsername.isEmpty) {
-      throw ArgumentError.value(username, 'username', 'Must not be empty.');
+      throw ArgumentError.value(username, 'username', 'Tidak boleh kosong');
     }
 
     _username = normalizedUsername;
